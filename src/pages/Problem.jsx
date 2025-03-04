@@ -3,6 +3,7 @@ import Editor from "@monaco-editor/react";
 import axios from "axios";
 import problems from "../problems.json";
 import { useParams } from "react-router-dom";
+import Navbar from "../components/Navbar"; // Import the Navbar component
 
 const Problem = () => {
   const { id } = useParams(); // Get the problem ID from the URL
@@ -150,98 +151,104 @@ const Problem = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 font-poppins text-gray-100 p-8">
-      {/* Timer */}
-      <div className="text-right mb-4">
-        <p className="text-gray-400">
-          Time Elapsed: <span className="font-bold">{formatTime(timeElapsed)}</span>
-        </p>
-      </div>
+    <div className="min-h-screen bg-gray-900 font-poppins text-gray-100">
+      {/* Navbar */}
+      <Navbar />
 
-      <h1 className="text-3xl font-bold mb-4 text-purple-400">{problem.title}</h1>
-      <p className="text-gray-400 mb-4">{problem.description}</p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Problem Details */}
-        <div>
-          <h2 className="text-xl font-semibold mb-2 text-gray-300">Sample Input</h2>
-          <pre className="bg-gray-800 p-4 rounded-lg text-gray-400 mb-4">
-            {problem.sampleInput}
-          </pre>
-
-          <h2 className="text-xl font-semibold mb-2 text-gray-300">Sample Output</h2>
-          <pre className="bg-gray-800 p-4 rounded-lg text-gray-400">
-            {problem.sampleOutput}
-          </pre>
+      {/* Main Content */}
+      <div className="p-8">
+        {/* Timer */}
+        <div className="text-right mb-4">
+          <p className="text-gray-400">
+            Time Elapsed: <span className="font-bold">{formatTime(timeElapsed)}</span>
+          </p>
         </div>
 
-        {/* Code Editor */}
-        <div>
-          <h2 className="text-xl font-semibold mb-2 text-gray-300">Code Editor</h2>
+        <h1 className="text-3xl font-bold mb-4 text-purple-400">{problem.title}</h1>
+        <p className="text-gray-400 mb-4">{problem.description}</p>
 
-          {/* Language Selection Dropdown */}
-          <div className="mb-4">
-            <label htmlFor="language" className="block text-sm font-medium text-gray-300">
-              Select Language
-            </label>
-            <select
-              id="language"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Problem Details */}
+          <div>
+            <h2 className="text-xl font-semibold mb-2 text-gray-300">Sample Input</h2>
+            <pre className="bg-gray-800 p-4 rounded-lg text-gray-400 mb-4">
+              {problem.sampleInput}
+            </pre>
+
+            <h2 className="text-xl font-semibold mb-2 text-gray-300">Sample Output</h2>
+            <pre className="bg-gray-800 p-4 rounded-lg text-gray-400">
+              {problem.sampleOutput}
+            </pre>
+          </div>
+
+          {/* Code Editor */}
+          <div>
+            <h2 className="text-xl font-semibold mb-2 text-gray-300">Code Editor</h2>
+
+            {/* Language Selection Dropdown */}
+            <div className="mb-4">
+              <label htmlFor="language" className="block text-sm font-medium text-gray-300">
+                Select Language
+              </label>
+              <select
+                id="language"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                {languageOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="bg-gray-800 p-4 rounded-lg">
+              <Editor
+                height="400px"
+                defaultLanguage={language === "cpp" ? "cpp" : "python"}
+                defaultValue={code}
+                onChange={(value) => setCode(value)}
+                theme="vs-dark"
+              />
+            </div>
+
+            {/* Run Button */}
+            <button
+              onClick={handleRunCode}
+              disabled={isLoading}
+              className="mt-4 bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
-              {languageOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+              {isLoading ? "Running..." : "Run Code"}
+            </button>
 
-          <div className="bg-gray-800 p-4 rounded-lg">
-            <Editor
-              height="400px"
-              defaultLanguage={language === "cpp" ? "cpp" : "python"}
-              defaultValue={code}
-              onChange={(value) => setCode(value)}
-              theme="vs-dark"
-            />
-          </div>
-
-          {/* Run Button */}
-          <button
-            onClick={handleRunCode}
-            disabled={isLoading}
-            className="mt-4 bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
-          >
-            {isLoading ? "Running..." : "Run Code"}
-          </button>
-
-          {/* Output */}
-          {output && (
-            <div className="mt-4">
-              <h2 className="text-xl font-semibold mb-2 text-gray-300">Output</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-400">Current Output</h3>
-                  <pre className="bg-gray-800 p-4 rounded-lg text-gray-400">{output}</pre>
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium text-gray-400">Expected Output</h3>
-                  <pre className="bg-gray-800 p-4 rounded-lg text-gray-400">
-                    {problem.sampleOutput}
-                  </pre>
+            {/* Output */}
+            {output && (
+              <div className="mt-4">
+                <h2 className="text-xl font-semibold mb-2 text-gray-300">Output</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-400">Current Output</h3>
+                    <pre className="bg-gray-800 p-4 rounded-lg text-gray-400">{output}</pre>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-400">Expected Output</h3>
+                    <pre className="bg-gray-800 p-4 rounded-lg text-gray-400">
+                      {problem.sampleOutput}
+                    </pre>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Success Message */}
-          {isSuccess && (
-            <div className="mt-4 p-4 bg-green-500 text-white rounded-md">
-              <p className="font-semibold">Success! Your code executed correctly.</p>
-            </div>
-          )}
+            {/* Success Message */}
+            {isSuccess && (
+              <div className="mt-4 p-4 bg-green-500 text-white rounded-md">
+                <p className="font-semibold">Success! Your code executed correctly.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
