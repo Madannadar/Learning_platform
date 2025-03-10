@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -21,22 +22,22 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:5000/api/auth/register", formData);
-      alert(response.data.message);
-      navigate("/login"); // Redirect to the login page
+      console.log("Register Response:", response.data); // Debugging
+      toast.success(response.data.message);
+      setTimeout(() => navigate("/login"), 1500);
     } catch (error) {
-      console.error(error);
-      alert("Registration failed. Please try again.");
+      console.error("Register Error:", error.response?.data || error.message); // Debugging
+      toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 font-poppins">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md border border-gray-700">
-        <h1 className="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+        <h1 className="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-600">
           Register
         </h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Email Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300">
               Email
@@ -48,11 +49,10 @@ const Register = () => {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
-          {/* Username Field */}
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-300">
               Username
@@ -64,11 +64,10 @@ const Register = () => {
               placeholder="Enter your username"
               value={formData.username}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
-          {/* Password Field */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-300">
               Password
@@ -80,11 +79,10 @@ const Register = () => {
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
-          {/* Occupation Field */}
           <div>
             <label htmlFor="occupation" className="block text-sm font-medium text-gray-300">
               Occupation
@@ -96,11 +94,10 @@ const Register = () => {
               placeholder="Enter your occupation"
               value={formData.occupation}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
-          {/* Location Field */}
           <div>
             <label htmlFor="location" className="block text-sm font-medium text-gray-300">
               Location
@@ -112,15 +109,14 @@ const Register = () => {
               placeholder="Enter your location"
               value={formData.location}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
-          {/* Submit Button */}
           <div>
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white py-2 px-4 rounded-md hover:from-purple-600 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full bg-gradient-to-r from-green-500 to-blue-600 text-white py-2 px-4 rounded-md hover:from-green-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-green-500"
             >
               Register
             </button>

@@ -17,21 +17,25 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Login Request Payload:", formData); // Debugging
+  
     try {
       const response = await axios.post("http://localhost:5000/api/auth/login", formData);
-      console.log("Login Response:", response.data); // Log the response
+      console.log("Login Response:", response.data); // Debugging
       toast.success(response.data.message);
-
-      // Store the JWT in local storage
+  
+      // Store the JWT token in local storage
       localStorage.setItem("token", response.data.token);
-
-      // Redirect to the home page
-      navigate("/");
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+  
+      // Redirect to home page after successful login
+      setTimeout(() => navigate("/"), 1000);
     } catch (error) {
-      console.error("Login Error:", error.response ? error.response.data : error.message); // Log the error
-      toast.error("Login failed. Please check your credentials.");
+      console.error("Login Error:", error.response?.data || error.message); // Debugging
+      toast.error(error.response?.data?.message || "Login failed. Please check your credentials.");
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 font-poppins">
@@ -40,23 +44,21 @@ const Login = () => {
           Login
         </h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Email/Username Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-              Email or Username
+              Email
             </label>
             <input
-              type="text"
+              type="email"
               id="email"
               name="email"
-              placeholder="Enter your email or username"
+              placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
 
-          {/* Password Field */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-300">
               Password
@@ -72,7 +74,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Submit Button */}
           <div>
             <button
               type="submit"
@@ -82,7 +83,6 @@ const Login = () => {
             </button>
           </div>
 
-          {/* Link to Register Page */}
           <p className="text-center text-gray-400">
             Don't have an account?{" "}
             <a href="/register" className="text-purple-400 hover:text-purple-300">
