@@ -33,7 +33,7 @@ exports.registerUser = async (req, res) => {
 // Get all users
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("-password"); // Exclude passwords
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -43,7 +43,7 @@ exports.getAllUsers = async (req, res) => {
 // Get a single user by ID
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).select("-password"); // Exclude password
     if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }
@@ -58,7 +58,7 @@ exports.updateUser = async (req, res) => {
   try {
     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-    });
+    }).select("-password"); // Exclude password
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found!" });
@@ -80,5 +80,22 @@ exports.deleteUser = async (req, res) => {
     res.status(200).json({ message: "User deleted successfully!" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// Get logged-in user's profile
+exports.getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId; // Extracted from token middleware
+    const user = await User.findById(userId).select("-password"); // Exclude password
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Profile Fetch Error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
